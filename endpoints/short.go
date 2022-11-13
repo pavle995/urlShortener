@@ -19,9 +19,9 @@ type Body struct {
 }
 
 func NewShort() Short {
-	db := dal.New()
+	db := dal.GetDbClient()
 
-	return Short{DbClient: &db}
+	return Short{DbClient: db}
 }
 
 func (s *Short) Handler(c *gin.Context) {

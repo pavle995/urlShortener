@@ -11,6 +11,7 @@ func main() {
 	r := gin.Default()
 
 	short := endpoints.NewShort()
+	redirect := endpoints.NewRedirect()
 
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -18,5 +19,6 @@ func main() {
 		})
 	})
 	r.POST("/short", short.Handler)
+	r.GET("/:id", redirect.Handler)
 	r.Run()
 }
