@@ -2,16 +2,21 @@ package main
 
 import (
 	"net/http"
+	"urlShortener/endpoints"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
+
+	short := endpoints.NewShort()
+
+	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
+			"message": "Service is working",
 		})
 	})
+	r.POST("/short", short.Handler)
 	r.Run()
 }

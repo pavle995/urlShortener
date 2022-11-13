@@ -14,12 +14,12 @@ type DynamoDBClient struct {
 	tableName string
 }
 
-func (c *DynamoDBClient) New(tableName string) DynamoDBClient {
+func New() DynamoDBClient {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 	svc := dynamodb.New(sess)
-	return DynamoDBClient{client: svc}
+	return DynamoDBClient{client: svc, tableName: "urls"}
 }
 
 func (c *DynamoDBClient) InsertNewRecord(url *models.Url) error {

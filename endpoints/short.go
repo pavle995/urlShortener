@@ -14,8 +14,22 @@ type Short struct {
 	DbClient *dal.DynamoDBClient
 }
 
+type Body struct {
+	Url string `form:"url"`
+}
+
+func NewShort() Short {
+	db := dal.New()
+
+	return Short{DbClient: &db}
+}
+
 func (s *Short) Handler(c *gin.Context) {
-	fullUrl := c.PostForm("url")
+	var fullUrl string
+	var body Body
+	if c.ShouldBind(&body) == nil {
+		fullUrl = body.Url
+	}
 	uuid := uuid.New()
 
 	// hardcoded for now
@@ -30,9 +44,11 @@ func (s *Short) Handler(c *gin.Context) {
 	}
 	err := s.DbClient.InsertNewRecord(&url)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"shortUrl": url.Id,
-			"message":  "inserted",
-		})
+		c.JSON(http.StatusInternalServerError, err)
+		return
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"shortUrl": url.Id,
+		"message":  "inserted",
+	})
 }
