@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"urlShortener/dal"
 
 	"github.com/gin-gonic/gin"
@@ -35,6 +36,15 @@ func (r *Redirect) Handler(c *gin.Context) {
 		return
 	}
 
-	// TODO: check for http or https on baging and append if missing
+	*redirectUrl = addProtocolIfNotExists(*redirectUrl)
+
 	c.Redirect(http.StatusMovedPermanently, *redirectUrl)
+}
+
+func addProtocolIfNotExists(redirectUrl string) string {
+	if strings.HasPrefix(redirectUrl, "http") {
+		return redirectUrl
+	}
+
+	return "https://" + redirectUrl
 }
