@@ -26,7 +26,7 @@ func main() {
 	r.POST("/short", short.Handler)
 	r.GET("/:id", redirect.Handler)
 	log.Info("Starting server...")
-	r.Run()
+	r.Run(":80")
 }
 
 func initLog() {

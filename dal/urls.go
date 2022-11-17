@@ -31,7 +31,7 @@ func newDbClient() DynamoDBClient {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-	svc := dynamodb.New(sess)
+	svc := dynamodb.New(sess, aws.NewConfig().WithRegion("eu-south-1"))
 	return DynamoDBClient{client: svc, tableName: "urls"}
 }
 
