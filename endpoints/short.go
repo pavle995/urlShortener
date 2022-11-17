@@ -44,7 +44,7 @@ func (s *Short) Handler(c *gin.Context) {
 	}
 	err := s.DbClient.InsertNewRecord(&url)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

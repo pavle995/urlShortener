@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
+	log "github.com/sirupsen/logrus"
 )
 
 type DynamoDBClient struct {
@@ -37,6 +38,7 @@ func newDbClient() DynamoDBClient {
 func (c *DynamoDBClient) InsertNewRecord(url *models.Url) error {
 	av, err := dynamodbattribute.MarshalMap(*url)
 	if err != nil {
+		log.Error("MarshalMap error: " + err.Error())
 		return err
 	}
 
@@ -47,6 +49,7 @@ func (c *DynamoDBClient) InsertNewRecord(url *models.Url) error {
 
 	_, err = c.client.PutItem(input)
 	if err != nil {
+		log.Error("fail writing to db: " + err.Error())
 		return err
 	}
 
@@ -58,6 +61,7 @@ func (c *DynamoDBClient) GetRedirect(id int) (*string, error) {
 	proj := expression.NamesList(expression.Name("fullUrl"))
 	expr, err := expression.NewBuilder().WithFilter(filt).WithProjection(proj).Build()
 	if err != nil {
+		log.Error("error building a scan expression: " + err.Error())
 		return nil, err
 	}
 
@@ -71,6 +75,7 @@ func (c *DynamoDBClient) GetRedirect(id int) (*string, error) {
 
 	result, err := c.client.Scan(params)
 	if err != nil {
+		log.Error("error scanning from db: " + err.Error())
 		return nil, err
 	}
 
@@ -80,6 +85,7 @@ func (c *DynamoDBClient) GetRedirect(id int) (*string, error) {
 		err = dynamodbattribute.UnmarshalMap(i, &item)
 
 		if err != nil {
+			log.Error("error UnmarshalingMap: " + err.Error())
 			return nil, err
 		}
 
