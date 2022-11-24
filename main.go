@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"urlShortener/config"
 	"urlShortener/endpoints"
+	"urlShortener/middlewares"
 
 	"os"
 
@@ -13,9 +16,12 @@ import (
 
 func main() {
 	r := gin.Default()
-	r.Use(CORSMiddleware())
+	r.Use(middlewares.CORSMiddleware())
 
-	initLog()
+	cfg := config.LoadConfig()
+	fmt.Println(cfg.Service.BaseUrl)
+
+	initLog(cfg)
 
 	short := endpoints.NewShort()
 	redirect := endpoints.NewRedirect()
@@ -28,29 +34,13 @@ func main() {
 	r.POST("/short", short.Handler)
 	r.GET("/:id", redirect.Handler)
 	log.Info("Starting server...")
-	log.Fatal(autotls.Run(r, "urlshortnerapi.pavlekosutic.com"))
+	log.Fatal(autotls.Run(r, cfg.Service.BaseUrl))
 }
 
-func initLog() {
-	file, err := os.OpenFile("/var/log/urlShortner/urlShortner.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+func initLog(c *config.Config) {
+	file, err := os.OpenFile(c.Service.LogPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		panic("Failed to open log file" + err.Error())
 	}
 	log.SetOutput(file)
-}
-
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
-		c.Next()
-	}
 }
