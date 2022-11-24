@@ -8,11 +8,16 @@ import (
 
 type Config struct {
 	Service Service
+	Cors    Cors
 }
 
 type Service struct {
 	BaseUrl string `yaml:"baseUrl"`
 	LogPath string `yaml:"logPath"`
+}
+
+type Cors struct {
+	Origin string `yaml:"origin"`
 }
 
 func LoadConfig() *Config {
