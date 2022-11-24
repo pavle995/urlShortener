@@ -7,8 +7,11 @@ require (
 	github.com/google/uuid v1.3.0
 )
 
+require golang.org/x/sync v0.0.0-20220819030929-7fc1605a5dde // indirect
+
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/gin-gonic/autotls v0.0.5
 	github.com/gin-gonic/gin v1.8.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
