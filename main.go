@@ -28,7 +28,7 @@ func main() {
 	r.POST("/short", short.Handler)
 	r.GET("/:id", redirect.Handler)
 	log.Info("Starting server...")
-	log.Fatal(autotls.Run(r, "ec2-15-161-149-189.eu-south-1.compute.amazonaws.com"))
+	log.Fatal(autotls.Run(r, "urlshortnerapi.pavlekosutic.com"))
 }
 
 func initLog() {
